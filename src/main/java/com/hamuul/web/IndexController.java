@@ -1,5 +1,6 @@
 package com.hamuul.web;
 
+import com.hamuul.config.auth.LoginUser;
 import com.hamuul.config.auth.dto.SessionUser;
 import com.hamuul.service.posts.PostsService;
 import com.hamuul.web.dto.PostsResponseDto;
@@ -19,10 +20,10 @@ public class IndexController {
     private final HttpSession httpSession;
 
       @GetMapping("/")
-    public String index(Model model) {
+    public String index(Model model, @LoginUser SessionUser user) {
         model.addAttribute("posts", postsService.findAllDesc());
 
-        SessionUser user = (SessionUser) httpSession.getAttribute("user"); //CustomOAuth2UserService에서 로그인 성공시 세션에 SessionUser저장
+        //SessionUser user = (SessionUser) httpSession.getAttribute("user"); //CustomOAuth2UserService에서 로그인 성공시 세션에 SessionUser저장
 
         if (user != null) {
             model.addAttribute("userName", user.getName());
