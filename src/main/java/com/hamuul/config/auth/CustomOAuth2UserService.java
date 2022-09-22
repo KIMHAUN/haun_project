@@ -5,6 +5,7 @@ import com.hamuul.config.auth.dto.SessionUser;
 import com.hamuul.domain.user.User;
 import com.hamuul.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
@@ -36,9 +38,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         User user = saveOrUpdate(attributes);
         httpSession.setAttribute("user", new SessionUser(user));
 
-        return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey()))
-                                                            , attributes.getAttributes()
-                                                            , attributes.getNameAttributeKey());
+        log.info("attributes :: "+attributes);
+        return new DefaultOAuth2User(
+                            Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey())),
+                            attributes.getAttributes(),
+                attributes.getNameAttributeKey()
+        );
     }
 
     private User saveOrUpdate(OAuthAttributes attributes) {
